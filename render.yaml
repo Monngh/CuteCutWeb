@@ -1,6 +1,7 @@
 services:
   - type: web
     name: autocut-api
+    plan: free
     env: docker
     dockerfilePath: ./backend/Dockerfile
     envVars:
@@ -16,6 +17,7 @@ services:
 
   - type: worker
     name: autocut-celery-worker
+    plan: free
     env: docker
     dockerfilePath: ./backend/Dockerfile
     envVars:
@@ -29,5 +31,6 @@ services:
 
   - type: redis
     name: autocut-redis
+    plan: free
     ipAllowList: [] # Allow internal Render connections
     plan: free # or starter
