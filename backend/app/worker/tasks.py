@@ -73,7 +73,7 @@ def process_video_task(self, youtube_url: str):
         return {'result_url': 'https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4'}
 
     except Exception as e:
-        self.update_state(state='FAILURE', meta={'progress': 0, 'message': str(e)})
+        # Returning will implicitly set state to SUCCESS, and our API will parse {"error": ...} to mark it as failed in the frontend.
         return {'error': str(e)}
     finally:
         pass
