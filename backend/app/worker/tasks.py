@@ -42,7 +42,18 @@ def process_video_task(self, youtube_url: str):
                 'outtmpl': raw_video_path,
                 'quiet': True,
                 'no_warnings': True,
+                # Try to use Android or iOS client to bypass bot check
+                'extractor_args': {'youtube': {'client': ['android', 'ios']}}
             }
+            
+            # Use cookies if available (from Render Secret File or locally)
+            cookie_path_render = '/etc/secrets/cookies.txt'
+            cookie_path_local = '/app/cookies.txt'
+            if os.path.exists(cookie_path_render):
+                ydl_opts['cookiefile'] = cookie_path_render
+            elif os.path.exists(cookie_path_local):
+                ydl_opts['cookiefile'] = cookie_path_local
+
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([youtube_url])
 
