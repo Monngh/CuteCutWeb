@@ -12,7 +12,7 @@ services:
       - key: FRONTEND_URL
         value: "https://your-vercel-domain.vercel.app"
     # Starting uvicorn
-    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    dockerCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
 
   - type: worker
     name: autocut-celery-worker
@@ -25,7 +25,7 @@ services:
           name: autocut-redis
           property: connectionString
     # Starting Celery worker
-    startCommand: "celery -A app.worker.celery_app worker --loglevel=info --concurrency=2"
+    dockerCommand: "celery -A app.worker.celery_app worker --loglevel=info --concurrency=2"
 
   - type: redis
     name: autocut-redis
