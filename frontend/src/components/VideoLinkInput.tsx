@@ -37,7 +37,7 @@ export default function VideoLinkInput({ onSubmit, isLoading }: VideoLinkInputPr
                     Create Viral Shorts
                 </h2>
                 <p className="text-zinc-400 mb-8 text-sm">
-                    Paste a YouTube link below. We'll download, add captions, and format it for TikTok & Instagram.
+                    Paste a YouTube link below. We&apos;ll download, add captions, and format it for TikTok & Instagram.
                 </p>
 
                 <form onSubmit={handleSubmit} className="relative">
