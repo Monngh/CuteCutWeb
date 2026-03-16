@@ -46,13 +46,20 @@ def process_video_task(self, youtube_url: str):
                 'extractor_args': {'youtube': {'client': ['android', 'ios']}}
             }
             
+            import shutil
+            
             # Use cookies if available (from Render Secret File or locally)
             cookie_path_render = '/etc/secrets/cookies.txt'
             cookie_path_local = '/app/cookies.txt'
+            writable_cookie_path = f"{work_dir}/cookies.txt"
+            
             if os.path.exists(cookie_path_render):
-                ydl_opts['cookiefile'] = cookie_path_render
+                # Copy read-only secret to writable work_dir because yt-dlp needs write access
+                shutil.copyfile(cookie_path_render, writable_cookie_path)
+                ydl_opts['cookiefile'] = writable_cookie_path
             elif os.path.exists(cookie_path_local):
-                ydl_opts['cookiefile'] = cookie_path_local
+                shutil.copyfile(cookie_path_local, writable_cookie_path)
+                ydl_opts['cookiefile'] = writable_cookie_path
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([youtube_url])
