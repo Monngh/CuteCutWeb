@@ -33,4 +33,3 @@ services:
     name: autocut-redis
     plan: free
     ipAllowList: [] # Allow internal Render connections
-    plan: free # or starter
