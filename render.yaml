@@ -3,7 +3,7 @@ services:
     name: autocut-api
     plan: free
     env: docker
-    dockerfilePath: ./backend/Dockerfile
+    rootDir: backend
     envVars:
       - key: REDIS_URL
         fromService:

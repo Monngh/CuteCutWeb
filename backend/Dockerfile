@@ -18,7 +18,7 @@ COPY . .
 
 # Copy start script
 COPY start.sh .
-RUN chmod +x start.sh
+RUN sed -i 's/\r$//' start.sh && chmod +x start.sh
 
 # Ensure Celery and Uvicorn can run
 ENV PYTHONPATH=/app
