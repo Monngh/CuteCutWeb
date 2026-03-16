@@ -4,10 +4,10 @@ from app.api.v1_router import router as api_v1_router
 
 app = FastAPI(title="AutoCut Web Backend")
 
-# Optional: Configuration for CORS
+# Allow only the actual Vercel frontend domain in production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Tighten in production (e.g. Vercel domain)
+    allow_origins=["https://cute-cut-web.vercel.app", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

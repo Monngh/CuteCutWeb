@@ -17,7 +17,7 @@ export default function SocialPublisher({ jobId }: SocialPublisherProps) {
         // After callback, it calls /api/v1/oauth/publish
         console.log(`Publishing job ${jobId} to ${platform}`);
         setTimeout(() => {
-            window.location.href = `http://localhost:8000/api/v1/oauth/${platform}/login`;
+            window.location.href = `https://autocut-api-ru74.onrender.com/api/v1/oauth/${platform}/login`;
             setPublishing(null);
         }, 1000);
     };

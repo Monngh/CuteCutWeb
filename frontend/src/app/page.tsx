@@ -8,7 +8,8 @@ import VideoLinkInput from '@/components/VideoLinkInput';
 import ProgressTracker from '@/components/ProgressTracker';
 import SocialPublisher from '@/components/SocialPublisher';
 
-const API_BASE = 'http://localhost:8000/api/v1';
+// Points to the live Render backend
+const API_BASE = 'https://autocut-api-ru74.onrender.com/api/v1';
 
 export default function Home() {
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
