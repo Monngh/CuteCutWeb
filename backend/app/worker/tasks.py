@@ -38,9 +38,8 @@ def process_video_task(self, youtube_url: str):
             # Step 1: Download
             self.update_state(state='PROGRESS', meta={'progress': 10, 'message': 'Downloading video...'})
             ydl_opts = {
-                'format': 'bestvideo+bestaudio/best',
-                'merge_output_format': 'mp4',
-                'outtmpl': raw_video_path,
+                # Let yt-dlp pick the best format it can find automatically
+                'outtmpl': f"{work_dir}/raw_video.%(ext)s",
                 'quiet': True,
                 'no_warnings': True,
             }
@@ -61,7 +60,9 @@ def process_video_task(self, youtube_url: str):
                 ydl_opts['cookiefile'] = writable_cookie_path
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([youtube_url])
+                info_dict = ydl.extract_info(youtube_url, download=True)
+                downloaded_ext = info_dict.get('ext', 'mp4')
+                actual_raw_video_path = f"{work_dir}/raw_video.{downloaded_ext}"
 
             # Step 2: Transcribe (Mocked)
             self.update_state(state='PROGRESS', meta={'progress': 50, 'message': 'Transcribing audio...'})
@@ -71,7 +72,7 @@ def process_video_task(self, youtube_url: str):
             self.update_state(state='PROGRESS', meta={'progress': 75, 'message': 'Rendering video (9:16 format)...'})
             (
                 ffmpeg
-                .input(raw_video_path, ss=0, t=15)
+                .input(actual_raw_video_path, ss=0, t=15)
                 .filter('crop', 'ih*9/16', 'ih')
                 .output(final_video_path, vcodec='libx264', acodec='aac', strict='experimental')
                 .overwrite_output()
