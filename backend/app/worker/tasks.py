@@ -38,7 +38,8 @@ def process_video_task(self, youtube_url: str):
             # Step 1: Download
             self.update_state(state='PROGRESS', meta={'progress': 10, 'message': 'Downloading video...'})
             ydl_opts = {
-                'format': 'bestvideo[ext=mp4][height<=720]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+                'format': 'bestvideo+bestaudio/best',
+                'merge_output_format': 'mp4',
                 'outtmpl': raw_video_path,
                 'quiet': True,
                 'no_warnings': True,
