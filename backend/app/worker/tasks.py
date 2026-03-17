@@ -1,7 +1,8 @@
 import os
 import time
 import uuid
-import yt_dlp
+import pytubefix
+from pytubefix.cli import on_progress
 import ffmpeg
 from app.worker.celery_app import celery_app
 
@@ -35,21 +36,28 @@ def process_video_task(self, youtube_url: str):
 
     try:
         if ffmpeg_installed:
-            # Step 1: Download
+            # Step 1: Download using pytubefix (Better Bot Bypass for Python)
             self.update_state(state='PROGRESS', meta={'progress': 10, 'message': 'Downloading video...'})
-            ydl_opts = {
-                'format': 'best',
-                'outtmpl': f"{work_dir}/raw_video.%(ext)s",
-                'quiet': True,
-                'no_warnings': True,
-                # Try the official 2024 yt-dlp server bot bypass: OAuth2/Client spoofing
-                'extractor_args': {'youtube': {'client': ['tv', 'web']}},
-            }
             
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info_dict = ydl.extract_info(youtube_url, download=True)
-                downloaded_ext = info_dict.get('ext', 'mp4')
+            try:
+                # pytubefix has a built-in mechanism to bypass bot checks using po_token
+                yt = pytubefix.YouTube(youtube_url, use_po_token=True)
+                # Try getting the highest resolution progressive stream (video + audio together)
+                ys = yt.streams.get_highest_resolution()
+                
+                if not ys:
+                    # Fallback to any mp4 stream
+                    ys = yt.streams.filter(file_extension='mp4').first()
+                
+                if not ys:
+                    raise Exception("No MP4 streams found for this video")
+                
+                downloaded_ext = ys.subtype
                 actual_raw_video_path = f"{work_dir}/raw_video.{downloaded_ext}"
+                
+                ys.download(output_path=work_dir, filename=f"raw_video.{downloaded_ext}")
+            except Exception as e:
+                raise Exception(f"Pytubefix download failed: {str(e)}")
 
             # Step 2: Transcribe (Mocked)
             self.update_state(state='PROGRESS', meta={'progress': 50, 'message': 'Transcribing audio...'})
