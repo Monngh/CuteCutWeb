@@ -41,8 +41,8 @@ def process_video_task(self, youtube_url: str):
             
             try:
                 import requests
-                # Use a reliable direct MP4 link for testing the pipeline
-                sample_url = "https://cdn.pixabay.com/video/2023/10/22/186064-876800720_large.mp4"
+                # Use a reliable direct MP4 link for testing the pipeline (Google API test bucket)
+                sample_url = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                 
                 response = requests.get(sample_url, stream=True)
                 response.raise_for_status()
