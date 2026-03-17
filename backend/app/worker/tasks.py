@@ -38,29 +38,18 @@ def process_video_task(self, youtube_url: str):
             # Step 1: Download
             self.update_state(state='PROGRESS', meta={'progress': 10, 'message': 'Downloading video...'})
             ydl_opts = {
-                # Force yt-dlp to pick the best single file with both audio and video pre-merged.
-                # This bypasses the format not available errors from YouTube DASH manifests when using cookies.
                 'format': 'best',
                 'outtmpl': f"{work_dir}/raw_video.%(ext)s",
                 'quiet': True,
                 'no_warnings': True,
+                # Try adding standard browser headers to bypass bot blocks without using authenticated cookies
+                'http_headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                }
             }
             
-            import shutil
-            
-            # Use cookies if available (from Render Secret File or locally)
-            cookie_path_render = '/etc/secrets/cookies.txt'
-            cookie_path_local = '/app/cookies.txt'
-            writable_cookie_path = f"{work_dir}/cookies.txt"
-            
-            if os.path.exists(cookie_path_render):
-                # Copy read-only secret to writable work_dir because yt-dlp needs write access
-                shutil.copyfile(cookie_path_render, writable_cookie_path)
-                ydl_opts['cookiefile'] = writable_cookie_path
-            elif os.path.exists(cookie_path_local):
-                shutil.copyfile(cookie_path_local, writable_cookie_path)
-                ydl_opts['cookiefile'] = writable_cookie_path
-
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info_dict = ydl.extract_info(youtube_url, download=True)
                 downloaded_ext = info_dict.get('ext', 'mp4')
