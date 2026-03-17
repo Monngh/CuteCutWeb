@@ -7,6 +7,7 @@ import SplineBackground from '@/components/SplineBackground';
 import VideoLinkInput from '@/components/VideoLinkInput';
 import ProgressTracker from '@/components/ProgressTracker';
 import SocialPublisher from '@/components/SocialPublisher';
+import VideoResultPlayer from '@/components/VideoResultPlayer';
 
 // Points to the live Render backend
 const API_BASE = 'https://autocut-api-ru74.onrender.com/api/v1';
@@ -60,7 +61,12 @@ export default function Home() {
         )}
 
         {isCompleted && activeJobId && (
-          <SocialPublisher jobId={activeJobId} />
+          <div className="w-full flex flex-col items-center">
+            {jobStatus?.result_url && (
+              <VideoResultPlayer videoUrl={jobStatus.result_url} />
+            )}
+            <SocialPublisher jobId={activeJobId} />
+          </div>
         )}
       </div>
     </main>
