@@ -42,12 +42,8 @@ def process_video_task(self, youtube_url: str):
                 'outtmpl': f"{work_dir}/raw_video.%(ext)s",
                 'quiet': True,
                 'no_warnings': True,
-                # Try adding standard browser headers to bypass bot blocks without using authenticated cookies
-                'http_headers': {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-                    'Accept-Language': 'en-US,en;q=0.5',
-                }
+                # Try the official 2024 yt-dlp server bot bypass: OAuth2/Client spoofing
+                'extractor_args': {'youtube': {'client': ['tv', 'web']}},
             }
             
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
