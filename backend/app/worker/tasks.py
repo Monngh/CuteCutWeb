@@ -44,6 +44,7 @@ def process_video_task(self, youtube_url: str):
                 # Use a reliable direct MP4 link for testing the pipeline (Google API test bucket)
                 sample_url = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                 
+                # Bypassing YouTube entirely for this test phase
                 response = requests.get(sample_url, stream=True)
                 response.raise_for_status()
                 
