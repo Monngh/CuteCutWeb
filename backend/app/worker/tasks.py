@@ -43,8 +43,6 @@ def process_video_task(self, youtube_url: str):
                 'outtmpl': raw_video_path,
                 'quiet': True,
                 'no_warnings': True,
-                # Try to use Android or iOS client to bypass bot check
-                'extractor_args': {'youtube': {'client': ['android', 'ios']}}
             }
             
             import shutil
