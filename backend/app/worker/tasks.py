@@ -38,7 +38,9 @@ def process_video_task(self, youtube_url: str):
             # Step 1: Download
             self.update_state(state='PROGRESS', meta={'progress': 10, 'message': 'Downloading video...'})
             ydl_opts = {
-                # Let yt-dlp pick the best format it can find automatically
+                # Force yt-dlp to pick the best single file with both audio and video pre-merged.
+                # This bypasses the format not available errors from YouTube DASH manifests when using cookies.
+                'format': 'best',
                 'outtmpl': f"{work_dir}/raw_video.%(ext)s",
                 'quiet': True,
                 'no_warnings': True,
