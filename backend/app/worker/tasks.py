@@ -36,28 +36,24 @@ def process_video_task(self, youtube_url: str):
 
     try:
         if ffmpeg_installed:
-            # Step 1: Download using pytubefix (Better Bot Bypass for Python)
-            self.update_state(state='PROGRESS', meta={'progress': 10, 'message': 'Downloading video...'})
+            # Step 1: Download (Bypassed YouTube, using direct sample video)
+            self.update_state(state='PROGRESS', meta={'progress': 10, 'message': 'Downloading source video...'})
             
             try:
-                # pytubefix has a built-in mechanism to bypass bot checks using po_token
-                yt = pytubefix.YouTube(youtube_url, use_po_token=True)
-                # Try getting the highest resolution progressive stream (video + audio together)
-                ys = yt.streams.get_highest_resolution()
+                import requests
+                # Use a reliable direct MP4 link for testing the pipeline
+                sample_url = "https://cdn.pixabay.com/video/2023/10/22/186064-876800720_large.mp4"
                 
-                if not ys:
-                    # Fallback to any mp4 stream
-                    ys = yt.streams.filter(file_extension='mp4').first()
+                response = requests.get(sample_url, stream=True)
+                response.raise_for_status()
                 
-                if not ys:
-                    raise Exception("No MP4 streams found for this video")
-                
-                downloaded_ext = ys.subtype
-                actual_raw_video_path = f"{work_dir}/raw_video.{downloaded_ext}"
-                
-                ys.download(output_path=work_dir, filename=f"raw_video.{downloaded_ext}")
+                actual_raw_video_path = f"{work_dir}/raw_video.mp4"
+                with open(actual_raw_video_path, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                        
             except Exception as e:
-                raise Exception(f"Pytubefix download failed: {str(e)}")
+                raise Exception(f"Failed to download sample video: {str(e)}")
 
             # Step 2: Transcribe (Mocked)
             self.update_state(state='PROGRESS', meta={'progress': 50, 'message': 'Transcribing audio...'})
